@@ -49,7 +49,7 @@ pipeline {
         stage('commit version update'){
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'PASS', usernameVariable: 'USER')]){
+                    withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]){
                         sh 'git config --global user.email "josephnsudegodswill@gmail.com"'
                         sh 'git config --global user.name "Godswill012"'
 
@@ -57,10 +57,10 @@ pipeline {
                         sh 'git branch'
                         sh 'git config --list'
 
-                        sh "git remote set-url origin https://${USER}:${PASS}@github.com/Godswill012/jenkins-java-app.git"
-                        sh 'git add .'
+                        sh 'git add pom.xml'
                         sh 'git commit -m "ci: version bump"'
-                        sh 'git push origin HEAD:jenkins-jobs'
+                        sh '''git -c http.extraheader="AUTHORIZATION: basic $(printf '%s' "$GIT_USERNAME:$GIT_PASSWORD" | base64 -w 0)" \
+                            push https://github.com/Godswill012/jenkins-java-app.git HEAD:jenkins-jobs'''
                     }
                 }
             }
