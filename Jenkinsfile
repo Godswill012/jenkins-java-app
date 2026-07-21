@@ -60,17 +60,19 @@ pipeline {
                         sh 'git add pom.xml'
                         sh 'git commit -m "ci: version bump"'
                                                 sh '''set +x
-                                                        cat > .git-askpass <<'EOF'
+                            helper="$(mktemp)"
+                            trap 'rm -f "$helper"' EXIT
+                            cat > "$helper" <<'EOF'
 #!/bin/sh
 case "$1" in
     *Username*) printf '%s' "$GIT_USERNAME" ;;
     *Password*) printf '%s' "$GIT_PASSWORD" ;;
 esac
 EOF
-                                                        chmod 700 .git-askpass
-                                                        GIT_ASKPASS="$PWD/.git-askpass" GIT_TERMINAL_PROMPT=0 \
+                            chmod 700 "$helper"
+                            GIT_ASKPASS="$helper" GIT_TERMINAL_PROMPT=0 \
                                                             git push https://github.com/Godswill012/jenkins-java-app.git HEAD:jenkins-jobs
-                                                        rm -f .git-askpass'''
+                            rm -f "$helper"'''
                     }
                 }
             }
