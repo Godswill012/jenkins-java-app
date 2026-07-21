@@ -59,8 +59,18 @@ pipeline {
 
                         sh 'git add pom.xml'
                         sh 'git commit -m "ci: version bump"'
-                        sh '''git -c http.extraheader="AUTHORIZATION: basic $(printf '%s' "$GIT_USERNAME:$GIT_PASSWORD" | base64 -w 0)" \
-                            push https://github.com/Godswill012/jenkins-java-app.git HEAD:jenkins-jobs'''
+                                                sh '''set +x
+                                                        cat > .git-askpass <<'EOF'
+#!/bin/sh
+case "$1" in
+    *Username*) printf '%s' "$GIT_USERNAME" ;;
+    *Password*) printf '%s' "$GIT_PASSWORD" ;;
+esac
+EOF
+                                                        chmod 700 .git-askpass
+                                                        GIT_ASKPASS="$PWD/.git-askpass" GIT_TERMINAL_PROMPT=0 \
+                                                            git push https://github.com/Godswill012/jenkins-java-app.git HEAD:jenkins-jobs
+                                                        rm -f .git-askpass'''
                     }
                 }
             }
