@@ -289,3 +289,6 @@ redis:latest
 6. Merge the Jenkins job branch into your working branch.
 7. Install any extra tooling Jenkins needs inside the container.
 8. Build and publish Docker images from Jenkins.
+
+# Auto-matic version generator (WINDOWS)
+mvn build-helper:parse-version versions:set -DnewVersion=${parsedVersion.majorVersion}.${parsedVersion.nextMinorVersion}.${parsedVersion.incrementalVersion} versions:commit
