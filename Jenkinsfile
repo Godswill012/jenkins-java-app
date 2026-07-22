@@ -50,8 +50,8 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]){
-                        sh 'git config --global user.email "josephnsudegodswill@gmail.com"'
-                        sh 'git config --global user.name "Godswill012"'
+                        sh 'git config --global user.email "jenkins-bot@company.com"'
+                        sh 'git config --global user.name "Jenkins Bot"'
 
                         sh 'git status'
                         sh 'git branch'
